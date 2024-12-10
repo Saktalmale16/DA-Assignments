@@ -1,0 +1,575 @@
+					                         
+                                                                         #############SQL Assignment Questions-solutions#############
+
+
+
+
+#Question no.1(a) (SELECT CLAUSE) 
+
+
+mysql> use `classicmodels`;
+Database changed
+mysql> select employeenumber,firstname,lastname from classicmodels.employees where jobTitle = 'sales rep' and reportsTo = 1102;
++----------------+-----------+-----------+
+| employeenumber | firstname | lastname  |
++----------------+-----------+-----------+
+|           1337 | Loui      | Bondur    |
+|           1370 | Gerard    | Hernandez |
+|           1401 | Pamela    | Castillo  |
+|           1501 | Larry     | Bott      |
+|           1504 | Barry     | Jones     |
+|           1702 | Martin    | Gerard    |
++----------------+-----------+-----------+
+6 rows in set (0.00 sec)
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Question no.1(b)
+
+
+mysql> select distinct productline from classicmodels.products where productline like "%cars";
++--------------+
+| productline  |
++--------------+
+| Classic Cars |
+| Vintage Cars |
++--------------+
+2 rows in set (0.00 sec)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Question no.4(a) (CONSTRAINTS)
+
+
+mysql> use `customers_orders`;
+Database changed
+mysql> create table customers(customer_id integer auto_increment,first_name varchar(50) not null,last_name varchar(50) not null,
+    -> email varchar(255)unique not null,phone_number varchar(20),primary key(customer_id));
+Query OK, 0 rows affected (1.50 sec)
+
+mysql> desc customers;
++--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| customer_id  | int          | NO   | PRI | NULL    | auto_increment |
+| first_name   | varchar(50)  | NO   |     | NULL    |                |
+| last_name    | varchar(50)  | NO   |     | NULL    |                |
+| email        | varchar(255) | NO   | UNI | NULL    |                |
+| phone_number | varchar(20)  | YES  |     | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+5 rows in set (0.12 sec)
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#Question no.4(b)
+
+
+mysql> create table orders(order_id integer primary key auto_increment,customer_id integer ,order_date date not null,
+    -> total_amount decimal(10,2) check(total_amount > 0),foreign key(customer_id) references customers(customer_id));
+Query OK, 0 rows affected (1.39 sec)
+
+mysql> desc orders;
++--------------+---------------+------+-----+---------+----------------+
+| Field        | Type          | Null | Key | Default | Extra          |
++--------------+---------------+------+-----+---------+----------------+
+| order_id     | int           | NO   | PRI | NULL    | auto_increment |
+| customer_id  | int           | YES  | MUL | NULL    |                |
+| order_date   | date          | NO   |     | NULL    |                |
+| total_amount | decimal(10,2) | YES  |     | NULL    |                |
++--------------+---------------+------+-----+---------+----------------+
+4 rows in set (0.04 sec)
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                             
+#Question no.6 (SELF JOIN)
+
+
+mysql> use `classicmodels`;
+Database changed
+mysql> create table project(EmployeeID int,FullName varchar(100),Gender varchar(10),ManagerID int);
+Query OK, 0 rows affected (0.57 sec)
+
+mysql> desc project;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| EmployeeID | int          | YES  |     | NULL    |       |
+| FullName   | varchar(100) | YES  |     | NULL    |       |
+| Gender     | varchar(10)  | YES  |     | NULL    |       |
+| ManagerID  | int          | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> insert into project values (1,'Pranaya','Male',3),(2,'Priyanka','Female',1),(3,'Preety','Female',Null),
+    -> (4,'Anurag','Male',1),(5,'Sambit','Male',1),(6,'Rajesh','Male',3),(7,'Hina','Female',3);
+Query OK, 7 rows affected (0.05 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> select * from project;
++------------+----------+--------+-----------+
+| EmployeeID | FullName | Gender | ManagerID |
++------------+----------+--------+-----------+
+|          1 | Pranaya  | Male   |         3 |
+|          2 | Priyanka | Female |         1 |
+|          3 | Preety   | Female |      NULL |
+|          4 | Anurag   | Male   |         1 |
+|          5 | Sambit   | Male   |         1 |
+|          6 | Rajesh   | Male   |         3 |
+|          7 | Hina     | Female |         3 |
++------------+----------+--------+-----------+
+7 rows in set (0.00 sec)
+
+mysql>  select p1.FullName as "Manager Name",p2.FullName as "Emp Name" from project p1  join project p2 on p1.EmployeeID = p2.ManagerID order by p1.FullName;
++--------------+----------+
+| Manager Name | Emp Name |
++--------------+----------+
+| Pranaya      | Priyanka |
+| Pranaya      | Anurag   |
+| Pranaya      | Sambit   |
+| Preety       | Pranaya  |
+| Preety       | Rajesh   |
+| Preety       | Hina     |
++--------------+----------+
+6 rows in set (0.04 sec)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                                                                 
+#Question no.7 (DDL COMMANDS)
+
+
+mysql> use `classicmodels`;
+Database changed
+mysql> create table Facility(Facility_id int not null,Name varchar(100),State varchar(100),Country varchar(100));
+Query OK, 0 rows affected (0.82 sec)
+
+mysql> desc Facility;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| Facility_id | int          | NO   |     | NULL    |       |
+| Name        | varchar(100) | YES  |     | NULL    |       |
+| State       | varchar(100) | YES  |     | NULL    |       |
+| Country     | varchar(100) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+4 rows in set (0.02 sec)
+
+mysql> alter table Facility modify column Facility_id int primary key auto_increment;
+Query OK, 0 rows affected (1.61 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Facility;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| Facility_id | int          | NO   | PRI | NULL    | auto_increment |
+| Name        | varchar(100) | YES  |     | NULL    |                |
+| State       | varchar(100) | YES  |     | NULL    |                |
+| Country     | varchar(100) | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> alter table Facility add column city varchar(100) not null after name;
+Query OK, 0 rows affected (0.28 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc Facility;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| Facility_id | int          | NO   | PRI | NULL    | auto_increment |
+| Name        | varchar(100) | YES  |     | NULL    |                |
+| city        | varchar(100) | NO   |     | NULL    |                |
+| State       | varchar(100) | YES  |     | NULL    |                |
+| Country     | varchar(100) | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Question no.13 (TRIGGERS)
+
+
+
+CREATE DEFINER=`root`@`localhost` TRIGGER `Ensure Positive Working Hours` BEFORE INSERT ON `emp_bit` FOR EACH ROW BEGIN
+if  new.working_hours < 0 then set new.working_hours = - new.working_hours;
+end if;
+END
+
+
+mysql> use `classicmodels`;
+Database changed
+mysql> create table Emp_BIT(Name varchar(255),Occupation varchar(255),Working_date date,Working_hours int);
+Query OK, 0 rows affected (4.06 sec)
+
+mysql> insert into Emp_BIT values('Robin','Scientist','2020-10-04',12),('Warner','Engineer','2020-10-04',10),('Peter','Actor','2020-10-04',13),('Marco','Doctor','2020-10-04',14),
+    -> ('Brayden','Teacher','2020-10-04',12),('Antonio','Business','2020-10-04',11);
+Query OK, 6 rows affected (0.66 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> desc Emp_BIT;
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| Name          | varchar(255) | YES  |     | NULL    |       |
+| Occupation    | varchar(255) | YES  |     | NULL    |       |
+| Working_date  | date         | YES  |     | NULL    |       |
+| Working_hours | int          | YES  |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+4 rows in set (0.04 sec)
+
+mysql> select * from Emp_BIT;
++---------+------------+--------------+---------------+
+| Name    | Occupation | Working_date | Working_hours |
++---------+------------+--------------+---------------+
+| Robin   | Scientist  | 2020-10-04   |            12 |
+| Warner  | Engineer   | 2020-10-04   |            10 |
+| Peter   | Actor      | 2020-10-04   |            13 |
+| Marco   | Doctor     | 2020-10-04   |            14 |
+| Brayden | Teacher    | 2020-10-04   |            12 |
+| Antonio | Business   | 2020-10-04   |            11 |
++---------+------------+--------------+---------------+
+6 rows in set (0.00 sec)
+
+mysql> insert into Emp_BIT values('pooja','Shafe','2020-10-04',-15);
+Query OK, 1 row affected (0.16 sec)
+
+mysql> select * from Emp_BIT;
++---------+------------+--------------+---------------+
+| Name    | Occupation | Working_date | Working_hours |
++---------+------------+--------------+---------------+
+| Robin   | Scientist  | 2020-10-04   |            12 |
+| Warner  | Engineer   | 2020-10-04   |            10 |
+| Peter   | Actor      | 2020-10-04   |            13 |
+| Marco   | Doctor     | 2020-10-04   |            14 |
+| Brayden | Teacher    | 2020-10-04   |            12 |
+| Antonio | Business   | 2020-10-04   |            11 |
+| pooja   | Shafe      | 2020-10-04   |            15 |
++---------+------------+--------------+---------------+
+7 rows in set (0.00 sec)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Question no.11 (Subqueries and their applications)
+
+
+mysql> select productline,count(*) as Total from products where buyprice > (select avg(buyprice)from products) group by productline order by Total desc;
++------------------+-------+
+| productline      | Total |
++------------------+-------+
+| Classic Cars     |    24 |
+| Vintage Cars     |    10 |
+| Trucks and Buses |     7 |
+| Motorcycles      |     6 |
+| Planes           |     5 |
+| Ships            |     1 |
+| Trains           |     1 |
++------------------+-------+
+7 rows in set (0.03 sec)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Question no.9 (Stored Procedures in SQL with parameters)
+
+
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_country_payments`(in inout_year int,in input_country varchar(255))
+BEGIN
+select
+year(paymentdate) as year , country as country ,
+concat(format (sum(amount) / 1000,0), 'k') as Totalamount from payments
+inner join customers on 
+payments.customernumber = customers.customernumber
+where year(paymentdate) = inout_year
+and country = input_country
+group by year , country;
+END
+
+
+mysql> use `classicmodels`;
+Database changed
+mysql> call Get_country_payments(2003,'France');
++------+---------+-------------+
+| year | country | Totalamount |
++------+---------+-------------+
+| 2003 | France  | 283k        |
++------+---------+-------------+
+1 row in set (0.04 sec)
+
+Query OK, 0 rows affected (0.04 sec)
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Question no.5 (JOINS)
+
+
+mysql> select c.country,count(o.ordernumber) as order_count from customers c
+    -> join orders o on c.customernumber = o.customernumber  group by c.country order by order_count desc limit 5;
++-------------+-------------+
+| country     | order_count |
++-------------+-------------+
+| USA         |         112 |
+| France      |          37 |
+| Spain       |          36 |
+| Australia   |          19 |
+| New Zealand |          15 |
++-------------+-------------+
+5 rows in set (0.25 sec)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Question no.2 (CASE STATEMENTS for Segmentation)
+
+
+
+mysql> select customernumber,customername,
+    -> case
+    -> when country in ('USA','Canada') Then 'North America'
+    -> when country in ('UK','France','Germany') Then 'Europe'
+    -> ELSE 'other'
+    -> END as customersegment from customers limit 14;
++----------------+------------------------------+-----------------+
+| customernumber | customername                 | customersegment |
++----------------+------------------------------+-----------------+
+|            103 | Atelier graphique            | Europe          |
+|            112 | Signal Gift Stores           | North America   |
+|            114 | Australian Collectors, Co.   | other           |
+|            119 | La Rochelle Gifts            | Europe          |
+|            121 | Baane Mini Imports           | other           |
+|            124 | Mini Gifts Distributors Ltd. | North America   |
+|            125 | Havel & Zbyszek Co           | other           |
+|            128 | Blauer See Auto, Co.         | Europe          |
+|            129 | Mini Wheels Co.              | North America   |
+|            131 | Land of Toys Inc.            | North America   |
+|            141 | Euro+ Shopping Channel       | other           |
+|            144 | Volvo Model Replicas, Co     | other           |
+|            145 | Danish Wholesale Imports     | other           |
+|            146 | Saveley & Henriot, Co.       | Europe          |
++----------------+------------------------------+-----------------+
+14 rows in set (0.00 sec)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#Question no.8 (Views in SQL)
+
+
+
+mysql> use `classicmodels`;
+Database changed
+mysql> create view product_category_sales as select p1.productline as productline,
+    -> sum(od.quantityOrdered * od.priceEach) as total_sales,
+    -> count(distinct o.orderNumber) as number_of_orders from products p
+    -> join productlines p1 on p.productline = p1.productline
+    -> join orderdetails od on p.productcode = od.productcode
+    -> join orders o on od.orderNumber = o.orderNumber
+    -> Group by p1.productline;
+Query OK, 0 rows affected (0.70 sec)
+
+mysql> select * from product_category_sales ;
++------------------+-------------+------------------+
+| productline      | total_sales | number_of_orders |
++------------------+-------------+------------------+
+| Classic Cars     |  3853922.49 |              209 |
+| Motorcycles      |  1121426.12 |               79 |
+| Planes           |   954637.54 |               66 |
+| Ships            |   663998.34 |               68 |
+| Trains           |   188532.92 |               47 |
+| Trucks and Buses |  1024113.57 |               75 |
+| Vintage Cars     |  1797559.63 |              187 |
++------------------+-------------+------------------+
+7 rows in set (0.24 sec)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#Question no.3(a) - (Group by with Aggregation functions and Having clause,Date and Time functions)
+
+
+
+mysql> select productcode,sum(quantityordered) as total_quantity from orderdetails group by productcode order by total_quantity desc limit 10;
++-------------+----------------+
+| productcode | total_quantity |
++-------------+----------------+
+| S18_3232    |           1808 |
+| S18_1342    |           1111 |
+| S700_4002   |           1085 |
+| S18_3856    |           1076 |
+| S50_1341    |           1074 |
+| S18_4600    |           1061 |
+| S10_1678    |           1057 |
+| S12_4473    |           1056 |
+| S18_2319    |           1053 |
+| S24_3856    |           1052 |
++-------------+----------------+
+10 rows in set (0.01 sec)
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#Question no.3(b)
+
+
+
+mysql> select monthname(paymentdate) as payment_month,count(*) as total_number_payments from payments group by payment_month having
+    -> total_number_payments > 20 order by total_number_payments desc;
++---------------+-----------------------+
+| payment_month | total_number_payments |
++---------------+-----------------------+
+| December      |                    43 |
+| November      |                    42 |
+| March         |                    24 |
+| May           |                    23 |
+| April         |                    22 |
++---------------+-----------------------+
+5 rows in set (0.00 sec)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#Question no.12 - (ERROR HANDLING in SQL)
+
+
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Insert_Emp_EH`(in input_EmpID int,in input_EmpName varchar(50),in input_EmailAddress varchar(100))
+BEGIN
+     declare exit handler for sqlexception
+     Begin
+         ROLLBACk;
+         SELECT 'Error Occurred' as
+ Message;        
+     END;
+     
+     START TRANSACTION;
+     Insert into Emp_EH(EmpID,EmpName,EmailAddress)
+     values(input_EmpID,input_EmpName,input_EmailAddress);
+     
+     COMMIT;
+     
+     SELECT 'Data inserted successfully' as message;
+END
+
+
+
+
+
+mysql> create table Emp_EH(EmpID int primary key,EmpName varchar(50),EmailAddress varchar(100));
+Query OK, 0 rows affected (1.73 sec)
+
+mysql> desc Emp_EH;
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| EmpID        | int          | NO   | PRI | NULL    |       |
+| EmpName      | varchar(50)  | YES  |     | NULL    |       |
+| EmailAddress | varchar(100) | YES  |     | NULL    |       |
++--------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> Call insert_Emp_EH(1,'John Doe','john.doe@example.com');
++----------------------------+
+| message                    |
++----------------------------+
+| Data inserted successfully |
++----------------------------+
+1 row in set (0.19 sec)
+
+Query OK, 0 rows affected (0.20 sec)
+
+
+mysql> Call insert_Emp_EH(Null,'John Doe','john.doeexample.com');
++----------------+
+| Message        |
++----------------+
+| Error Occurred |
++----------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Question no.10 (a)- (Window functions-Rank,dense_rank,lead and lag)
+
+
+
+mysql> Select c.customernumber,c.customername,count(o.ordernumber)as order_count,rank()over(order by count(o.ordernumber)desc)as order_frequency_rnk
+    -> from customers c join orders o on c.customernumber = o.customernumber group by c.customernumber,c.customername order by order_frequency_rnk limit 9;
++----------------+------------------------------+-------------+---------------------+
+| customernumber | customername                 | order_count | order_frequency_rnk |
++----------------+------------------------------+-------------+---------------------+
+|            141 | Euro+ Shopping Channel       |          26 |                   1 |
+|            124 | Mini Gifts Distributors Ltd. |          17 |                   2 |
+|            114 | Australian Collectors, Co.   |           5 |                   3 |
+|            353 | Reims Collectables           |           5 |                   3 |
+|            145 | Danish Wholesale Imports     |           5 |                   3 |
+|            148 | Dragon Souveniers, Ltd.      |           5 |                   3 |
+|            323 | Down Under Souveniers, Inc   |           5 |                   3 |
+|            381 | Royale Belge                 |           4 |                   4 |
+|            276 | Anna's Decorations, Ltd      |           4 |                   4 |
++----------------+------------------------------+-------------+---------------------+
+9 rows in set (0.00 sec)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+#Question no.10(b)
+
+
+
+mysql> with X as (select year(orderdate) as year,monthname(orderdate) as month , count(orderdate) as total_orders from orders group by year,month)
+    -> select year,month,total_orders as 'Total Orders' ,concat(round(100*(Total_orders - LAG(Total_orders) over(order by year)) / LAG(Total_orders)
+    -> over(order by year),0),'%') as "% YOY changes" from X limit 14;
++------+-----------+--------------+---------------+
+| year | month     | Total Orders | % YOY changes |
++------+-----------+--------------+---------------+
+| 2003 | January   |            5 | NULL          |
+| 2003 | February  |            3 | -40%          |
+| 2003 | March     |            6 | 100%          |
+| 2003 | April     |            7 | 17%           |
+| 2003 | May       |            6 | -14%          |
+| 2003 | June      |            7 | 17%           |
+| 2003 | July      |            7 | 0%            |
+| 2003 | August    |            5 | -29%          |
+| 2003 | September |            8 | 60%           |
+| 2003 | October   |           18 | 125%          |
+| 2003 | November  |           30 | 67%           |
+| 2003 | December  |            9 | -70%          |
+| 2004 | January   |            8 | -11%          |
+| 2004 | February  |           11 | 38%           |
++------+-----------+--------------+---------------+
+14 rows in set (0.04 sec)
+
+
+-------------------------------------------------------------------------------------------END-----------------------------------------------------------------------------------------------
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                            
